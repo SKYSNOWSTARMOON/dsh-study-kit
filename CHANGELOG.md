@@ -1,5 +1,12 @@
 # 变更日志
 
+## 0.7.5
+
+- CI 从「只做语法检查」改为真跑全部 55 项断言（Linux runner × Node 20/22），渲染冒烟失败即红；第一次跑就抓到下面的 bug。
+- 修 `scripts/selftest.mjs` 的夹具路径：相对路径被工具按会话工作目录解析，CI 上变成 `<workspace>/.tmp/study-fixtures` 而 ENOENT；现在统一 `path.resolve`。
+- `scripts/pack-smoke.mjs` 改为真断言（产物 ≥3000 字节、正文不残留 `$`）。
+- 新增 issue / PR 模板、`SECURITY.md`、`.editorconfig`；README 增「三句话上手」并修正 OCR 命令顺序。
+
 ## 0.7.4
 
 - 表格改为固定列宽：docx 用 `gridCol + tcW + tblLayout(fixed)`，HTML 用 `colgroup + table-layout: fixed`；列宽按内容长度分配并夹在 12%~42%，短列（「要求」「掌握」）不再被压成一字一行。
