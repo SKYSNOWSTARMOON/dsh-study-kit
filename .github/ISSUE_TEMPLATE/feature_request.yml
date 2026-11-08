@@ -1,0 +1,48 @@
+name: 功能建议
+description: 新的解析能力、新的输出格式、判定逻辑改进
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提之前先看一眼 README 的「已知缺点与限制」，那里列了明确不做的东西
+        （图表提取、`.apkg` 生成、云端 OCR 都需要新增依赖或联网，与零依赖取舍冲突）。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现在卡在哪
+      description: 描述具体场景，不要只写「希望能更好用」
+      placeholder: 我的讲义里有大量公式，OCR 出来全是乱的，每次都要手工改。
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: 你想要的解法
+      description: 可以是接口设想、参数名、期望输出
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 影响范围
+      options:
+        - 只加参数 / 输出（不动判定逻辑）
+        - 改解析器（docx / pptx / pdf）
+        - 改类型判定或去重阈值
+        - 新工具
+        - 只在 Windows 生效的脚本
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: 约束确认
+      options:
+        - label: 这个方案不需要新增 npm 依赖
+        - label: 我知道改动会影响已有资料库（需要重新 ingest）

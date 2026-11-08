@@ -11,7 +11,15 @@ python scripts/make-pdf-fixture.py .tmp/study-fixtures
 node scripts/selftest.mjs .tmp/study-fixtures
 ```
 
-必须全部通过再提 PR。改了解析/判定/渲染逻辑却不动自测的 PR 会被要求补测试。
+必须全部通过再提 PR。**当前基线 55 项，只增不减**；改了解析/判定/渲染逻辑却不动自测的 PR 会被要求补测试。
+
+CI（`.github/workflows/ci.yml`）在 Node 20/22 上跑：语法检查 → 打包清单 → 造夹具 → 全部断言 → 渲染冒烟。红灯先看是不是自己本地少跑了 `make-pdf-fixture.py`（PDF 夹具缺失会导致入库少一份）。
+
+## 合并规范
+
+- 一个 PR 只做一件事（一个 fix 或一个 feat），不要混重构与功能。
+- 提交信息按 `fix(scope):` / `feat(scope):` 写，正文说清「改了什么、为什么、怎么验证」。
+- 维护者合并时默认 **Squash and merge**，把碎提交压成一条进 `main`。
 
 ## 三条硬约束
 

@@ -4,30 +4,49 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   check:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node: [20, 22]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
-      # 语法检查（零依赖，无需 npm install）
+      # 零依赖，不需要 npm install
       - name: Syntax check
         run: |
           for f in lib/*.js scripts/*.mjs; do
             node --check "$f"
           done
 
-      # 打包体积与 files 白名单检查
-      - name: Pack check
+      - name: Packaging manifest
         run: npm pack --dry-run
 
-      # 渲染层自测（不依赖 python 夹具与浏览器）
+      # 夹具生成只需要 python-docx / python-pptx；PDF 夹具是手写字节，无第三方依赖
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fixture deps
+        run: pip install python-docx python-pptx
+
+      - name: Make fixtures
+        run: |
+          python scripts/make-fixtures.py .tmp/study-fixtures
+          python scripts/make-pdf-fixture.py .tmp/study-fixtures
+
+      # 46 项断言全跑：解析、清洗、分类、去重、索引、真题统计、蓝图、渲染
+      - name: Selftest
+        run: node scripts/selftest.mjs .tmp/study-fixtures
+
+      # 渲染冒烟：生成失败或产物过小会 exit 1
       - name: Render smoke
-        run: node scripts/pack-smoke.mjs || true
+        run: node scripts/pack-smoke.mjs

@@ -48,6 +48,28 @@ plugin_manager install_bundle "D:\path\to\dsh-study-kit"
 装完 `set_plugin include:study-kit enabled=false` 再 `=true`（或新开一轮对话），工具即生效。
 改了源码后同样要 false→true 才加载新代码；`install_bundle` 对已存在的 bundle 会报 `already-installed`，先 `remove_bundle` 再装。
 
+## 三句话上手
+
+装好之后，对着 DSH 说这三句就够了，不需要记参数：
+
+1. **「把 `D:\资料\病理学` 里的资料入库」** → 调 `study_ingest`，返回每份的类型、字数、章节数、跳过哪些同源副本。
+2. **「这门课按章做成 Word 和 PDF」** → 调 `study_course`，产出 `<工作目录>\病理学\01-第1章-xxx.docx + .pdf`。
+3. **「按真题出一套模拟卷，满分 100」** → 先 `study_exam_stats` 出考点热度表，再 `study_paper` 出蓝图，模型按蓝图写题。
+
+后面想补充内容就说「补进第 3 章」，它会并进原文件、加 `## 补充 · 日期` 段，旧正文不动。
+
+扫描件（PDF 里选不中文字、或手机拍的书页）要先 OCR：
+
+```powershell
+# 1) 整本 OCR：每页出一份 txt，产出 <OutDir>\pages\p0001.txt + pages.json
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\ocr-pdf.ps1 -Pdf "D:\资料\病理学.pdf" -OutDir "D:\资料\ocr\病理学"
+
+# 2) 按目录章名切章（章名一行一个写进 titles.txt；扫描件章号常被认错，用章名更稳）
+node scripts\ocr-chapters-auto.mjs "D:\资料\ocr\病理学\pages" "D:\资料\ocr\病理学\chapters" --tocTitles titles.txt --skipBefore 12
+```
+
+再 `study_ingest` 指向 `chapters` 目录。整本 500 页实测约 18 分钟（2.1 s/页）。
+
 ---
 
 ## 工具
@@ -293,7 +315,7 @@ $node = "C:\Users\SKY\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bi
 ```
 
 自测会：入库（docx 教材 + docx 真题 + pptx 课件 + 手搓 PDF）→ 同源去重 → 索引 → 读章节 → 真题统计 → 命题蓝图 → 课程文件夹增补/只登记/重渲染 → 表格与公式渲染，逐项断言。
-当前 **47 项全部通过**（覆盖表格保序、页眉水印清除、PDF 两页抽取与断行、12 题拆分、100 分合计、热度表无泛词残片、同源副本被跳过、重复入库走复用、同种子可复现、`$|A|$` 不被竖线切断、嵌套下标不残留 LaTeX、粗体里的公式渲染成上下标、表格固定列宽、rerender 重写 Word 但不改正文）。
+当前 **55 项全部通过**（覆盖表格保序、页眉水印清除、PDF 两页抽取与断行、12 题拆分、100 分合计、热度表无泛词残片、同源副本被跳过、重复入库走复用、同种子可复现、`$|A|$` 不被竖线切断、嵌套下标不残留 LaTeX、粗体里的公式渲染成上下标、表格固定列宽、rerender 重写 Word 但不改正文）。
 
 真机（装进 DSH 后）已跑通：4 份样本入库 → 类型与置信度正确（试卷 0.9 / 课件 0.8 / 教材正文 0.5 / PDF 0.65）→ 3 条干净考点 → 蓝图满分 100、12 题、题型配比 5×2 / 2×5 / 3×10 / 2×25、校验无 issue。
 真实资料实测：
@@ -325,7 +347,7 @@ scripts/        OCR、切章、夹具生成、自测
   ocr-pdf.ps1           整本扫描 PDF → 每页文本（Windows.Media.Ocr）
   ocr-image.ps1         零散图片 → 文本
   ocr-chapters-auto.mjs 按目录章名切章（--tocTitles）
-  selftest.mjs          47 项端到端自测
+  selftest.mjs          55 项端到端自测
 ```
 
 约束（提 PR 前请先看）：

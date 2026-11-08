@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 先读 README 的「已知缺点与限制」
+    url: https://github.com/SKYSNOWSTARMOON/dsh-study-kit#已知缺点与限制先说清楚省得踩坑
+    about: 扫描件公式、图表提取、Anki 导出、考点索引这些都是明确列出的边界，不是 bug。
+  - name: 自己改一版
+    url: https://github.com/SKYSNOWSTARMOON/dsh-study-kit/blob/main/CONTRIBUTING.md
+    about: 三条硬约束与自测跑法都在这里，改完提 PR 即可。

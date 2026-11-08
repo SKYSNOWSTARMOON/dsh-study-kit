@@ -1,0 +1,84 @@
+name: 报告问题
+description: 解析不对、导出失败、页面/工具报错
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先跑一次自测，能省很多来回：
+        ```
+        python scripts/make-fixtures.py .tmp/study-fixtures
+        python scripts/make-pdf-fixture.py .tmp/study-fixtures
+        node scripts/selftest.mjs .tmp/study-fixtures
+        ```
+        如果自测是绿的，问题多半在「你的资料格式」而不是代码，请把资料类型和环境写全。
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么
+      description: 你做了什么、期望什么、实际得到什么
+      placeholder: |
+        1. study_ingest 指向 D:\资料\病理学
+        2. 期望 8 份全部入库
+        3. 实际只入库 3 份，其余报「没抽到文字」
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: 报错原文
+      description: 原样粘贴，不要改写；没有报错就写「无报错，但结果不对」
+      render: text
+
+  - type: dropdown
+    id: material
+    attributes:
+      label: 资料类型
+      multiple: true
+      options:
+        - PDF（有文本层）
+        - PDF（扫描件，走 OCR）
+        - Word(.docx)
+        - PPT(.pptx)
+        - 纯文本 / Markdown
+        - 图片（截图 / 拍照）
+        - 直接粘贴的文本
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: 出问题的环节
+      options:
+        - 入库（study_ingest）
+        - 读章节（study_outline / study_read）
+        - 真题统计（study_exam_stats）
+        - 出卷（study_paper）
+        - 导出（study_export / study_pack）
+        - 课程文件夹（study_course）
+        - OCR 脚本（ocr-pdf.ps1 / ocr-image.ps1）
+        - 安装 / 加载插件
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: DSH 版本、Node 版本、Windows 版本
+      placeholder: "DSH 260xxx / Node 24.21.0 / Windows 11 26100"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: 已经确认
+      options:
+        - label: 自测（selftest）是通过的
+        - label: 插件是最新版本（`git log -1`）
+        - label: 这不是扫描件公式识别的已知限制（见 README「已知缺点与限制」）
