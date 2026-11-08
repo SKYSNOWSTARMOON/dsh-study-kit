@@ -1,5 +1,9 @@
 # dsh-study-kit —— DSH 资料整合与备考出题插件
 
+[![ci](https://github.com/SKYSNOWSTARMOON/dsh-study-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/SKYSNOWSTARMOON/dsh-study-kit/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![node](https://img.shields.io/badge/node-%E2%89%A518-brightgreen.svg)](package.json)
+
 把「上传学习资料 → 解析清洗 → 切章建索引 → 统计真题考点 → 出模拟卷 → 导出 Word/PDF」做成 DSH 常驻工具，不再靠每轮对话重新解释规则。
 
 **纯本地、零依赖、不出网**：只用 Node 内置模块，不装任何 npm 包。
