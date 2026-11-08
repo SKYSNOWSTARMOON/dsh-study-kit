@@ -289,6 +289,32 @@ async function main() {
   }, exec)
   check('形态自检：别名归一 + 合规章节通过', modeGood.lintCount === 0 && modeGood.mode === '精简背诵版', `${modeGood.mode}/${modeGood.text.split('\n').filter((l) => l.startsWith('- ☐')).join('；')}`)
 
+  // 原文核对（L1.5）：句子和原文毫无重叠就点名，但不判对错、不拦导出
+  const groundRoot = path.join(workspace, 'ground-course')
+  const groundBad = await byName.get('study_course').execute({
+    course: '原文核对课程',
+    outDir: groundRoot,
+    format: 'docx',
+    sourceDocs: ['船舶原理讲义'],
+    chapters: [{
+      no: 1,
+      title: '稳性',
+      markdown: '## 一、定义\n\n- **细胞膜的结构**：由磷脂双分子层构成，镶嵌多种跨膜蛋白，负责物质运输与信号传导。\n',
+    }],
+  }, exec)
+  check('原文核对点名与原文无重叠的句子', groundBad.groundCount > 0 && /原文核对（1 份原文）/.test(groundBad.text), `groundCount=${groundBad.groundCount}`)
+  check('原文核对不拦导出', groundBad.docxCount === 1, `docxCount=${groundBad.docxCount}`)
+
+  // 给了不存在的资料名要说明，而不是静默跳过
+  const groundMiss = await byName.get('study_course').execute({
+    course: '原文核对课程',
+    outDir: groundRoot,
+    format: 'docx',
+    sourceDocs: ['这份资料不存在'],
+    chapters: [{ no: 2, title: '稳性', markdown: '## 一、定义\n\n- **稳性**：船舶抵抗外力矩而恢复原平衡位置的能力。\n' }],
+  }, exec)
+  check('原文核对：找不到的资料会告警', /找不到这份资料/.test(groundMiss.text), groundMiss.text.split('\n').slice(-3).join(' / '))
+
   // 表格里的公式
   const mathHtml = markdownToHtml('| 项 | 值 |\n| --- | --- |\n| 行列式 | $|A|$ |\n| 下标 | $a_{1p_1}$ |\n', { title: '表格公式' })
   check('表格里的 $|A|$ 不被竖线切断', !mathHtml.includes('$'), mathHtml.slice(0, 120))

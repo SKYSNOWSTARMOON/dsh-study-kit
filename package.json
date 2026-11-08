@@ -1,59 +1,57 @@
 {
   "name": "dsh-study-kit",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "【学习】资料整合与备考出题：把教材/笔记/课件/习题/历年真题解析入库，切章建索引、统计考点热度、按真题风格出模拟卷命题蓝图，并把结果导出成 Word/PDF。纯本地、零依赖、不出网。",
   "meta": {
     "title": "（学习）资料整合",
-    "description": "解析 docx/pptx/pdf/文本资料，清洗切章建索引，统计真题考点热度，按真题风格生成模拟卷命题蓝图，把按章笔记打包成 Word/PDF 课程资料，也能把库里任意资料直接导出成 Word/PDF。"
+    "description": "解析 docx/pptx/pdf/文本资料，清洗切章建索引，统计真题考点热度，按章生成课程讲义（Word + PDF），可选导出 Anki 卡片，并对讲义做形态自检与原文核对。"
   },
   "type": "module",
   "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib",
+    "scripts",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE",
+    "examples"
+  ],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "test": "node scripts/selftest.mjs",
-    "check": "node --check lib/index.js && node --check lib/tools.js"
+    "check": "node --check lib/*.js"
   },
-  "exports": {
-    ".": {
-      "default": "./lib/index.js"
-    },
-    "./locale/*.json": "./locale/*.json",
-    "./icon": "./icon.svg",
-    "./package.json": "./package.json"
-  },
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    }
-  },
-  "files": [
-    "lib",
-    "scripts",
-    "examples",
-    "cordis.patch.yml",
-    "locale/*.json",
-    "icon.svg",
-    "README.md"
-  ],
   "keywords": [
     "dsh",
-    "dsh-plugin",
-    "deepseek-harness",
+    "cordis-plugin",
     "study",
     "exam",
-    "pdf",
-    "docx"
+    "ocr",
+    "docx",
+    "anki"
   ],
+  "author": "dsh-study-kit contributors",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SKYSNOWSTARMOON/dsh-study-kit.git"
+    "url": "https://github.com/SKYSNOWSTARMOON/dsh-study-kit"
   },
   "homepage": "https://github.com/SKYSNOWSTARMOON/dsh-study-kit#readme",
   "bugs": {
     "url": "https://github.com/SKYSNOWSTARMOON/dsh-study-kit/issues"
   },
-  "author": "dsh-study-kit contributors",
-  "license": "MIT"
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
 }
