@@ -240,6 +240,55 @@ async function main() {
   check('Anki 卡片三条都在', ankiText.trim().split('\n').length === 4 + 3, `行数 ${ankiText.trim().split('\n').length}`)
   check('Anki 卡片字段已清理 markdown', !ankiText.includes('**') && ankiText.includes('磷脂双分子层'))
 
+  // 形态自检（L1）：结构不合形态就点名，但不拦导出
+  const modeBadMd = [
+    '# 第3章 细胞学说',
+    '',
+    '## 一、考点速查',
+    '',
+    '| 考点 | 常见陷阱 | 要求 |',
+    '| --- | --- | --- |',
+    '| 细胞学说 |  | 识记 |',
+    '',
+  ].join('\n')
+  const modeBad = await byName.get('study_course').execute({
+    course: '自测课程',
+    outDir: adoptRoot,
+    format: 'docx',
+    mode: '精简背诵版',
+    chapters: [{ no: 3, title: '细胞学说', markdown: modeBadMd }],
+  }, exec)
+  check('形态自检点名待补项', modeBad.lintCount > 0 && /形态自检（精简背诵版）/.test(modeBad.text), `lintCount=${modeBad.lintCount}`)
+  check('形态自检不拦导出', modeBad.docxCount === 1, `docxCount=${modeBad.docxCount}`)
+
+  const modeGoodMd = [
+    '# 第4章 细胞结构',
+    '',
+    '## 一、考点速查',
+    '',
+    '| 考点 | 考察角度 | 常见陷阱 | 要求 |',
+    '| --- | --- | --- | --- |',
+    '| 细胞膜 | 判断成分 | 把选择透过性说成全透性 | 识记 |',
+    '| 细胞核 | 说清功能 | 与核仁功能混淆 | 掌握 |',
+    '',
+    '## 二、背诵清单',
+    '',
+    '- 细胞膜的主要成分：磷脂双分子层与蛋白质',
+    '- 细胞膜的结构特点：具有一定的流动性',
+    '- 细胞膜的功能特点：选择透过性',
+    '- 细胞核的功能：储存遗传物质，控制代谢',
+    '- 原核与真核的区别：有无核膜包被的细胞核',
+    '',
+  ].join('\n')
+  const modeGood = await byName.get('study_course').execute({
+    course: '自测课程',
+    outDir: adoptRoot,
+    format: 'docx',
+    mode: '精简',
+    chapters: [{ no: 4, title: '细胞结构', markdown: modeGoodMd }],
+  }, exec)
+  check('形态自检：别名归一 + 合规章节通过', modeGood.lintCount === 0 && modeGood.mode === '精简背诵版', `${modeGood.mode}/${modeGood.text.split('\n').filter((l) => l.startsWith('- ☐')).join('；')}`)
+
   // 表格里的公式
   const mathHtml = markdownToHtml('| 项 | 值 |\n| --- | --- |\n| 行列式 | $|A|$ |\n| 下标 | $a_{1p_1}$ |\n', { title: '表格公式' })
   check('表格里的 $|A|$ 不被竖线切断', !mathHtml.includes('$'), mathHtml.slice(0, 120))
