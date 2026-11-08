@@ -43,7 +43,7 @@ jobs:
           python scripts/make-fixtures.py .tmp/study-fixtures
           python scripts/make-pdf-fixture.py .tmp/study-fixtures
 
-      # 46 项断言全跑：解析、清洗、分类、去重、索引、真题统计、蓝图、渲染
+      # 全部断言：解析、清洗、分类、去重、索引、真题统计、蓝图、渲染
       - name: Selftest
         run: node scripts/selftest.mjs .tmp/study-fixtures
 

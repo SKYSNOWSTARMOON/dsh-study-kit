@@ -18,7 +18,9 @@ import { listZipEntries, readZipEntry } from '../lib/zip.js'
 const here = path.dirname(fileURLToPath(import.meta.url))
 // 夹具目录：命令行第 1 个参数 > 环境变量 STUDY_FIXTURES > <插件目录>/../.tmp/study-fixtures
 // （插件装在 profile 的 node_modules 下时，写死的相对路径会指到别处，必须能覆盖）
-const fixtures = process.argv[2] || process.env.STUDY_FIXTURES || path.resolve(here, '../../.tmp/study-fixtures')
+// 必须 path.resolve：工具把相对路径按工作目录解析，而下面的 workspace 是另一处，
+// 传相对夹具路径会变成 <workspace>/.tmp/study-fixtures（CI 上就这么挂过一次）
+const fixtures = path.resolve(process.argv[2] || process.env.STUDY_FIXTURES || path.join(here, '../../.tmp/study-fixtures'))
 const workspace = path.resolve(here, '../../.tmp/study-selftest-ws')
 
 const failures = []
