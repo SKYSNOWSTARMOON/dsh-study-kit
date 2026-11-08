@@ -1,0 +1,12 @@
+# dsh-study-kit —— bundle 自己的补丁层
+#
+# 只把插件本体的 host 行插进来，不碰 profile 的 package.json。
+# 安装走官方 plugin_manager 的 install_bundle（传本目录绝对路径）。
+#
+# 插件不读任何配置也能用（资料库固定落在「会话工作目录/.study-kit/」）。
+# 唯一可调项：单个文件的解析超时（毫秒）。
+- insert:
+    - id: study-kit
+      name: 'dsh-study-kit'
+      config:
+        timeoutMs: 180000

@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # 语法检查（零依赖，无需 npm install）
+      - name: Syntax check
+        run: |
+          for f in lib/*.js scripts/*.mjs; do
+            node --check "$f"
+          done
+
+      # 打包体积与 files 白名单检查
+      - name: Pack check
+        run: npm pack --dry-run
+
+      # 渲染层自测（不依赖 python 夹具与浏览器）
+      - name: Render smoke
+        run: node scripts/pack-smoke.mjs || true

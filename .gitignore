@@ -1,0 +1,11 @@
+node_modules/
+.pnpm-store/
+.tmp/
+.tmp-export/
+.study-kit/
+资料导出/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+docs/*.tmp

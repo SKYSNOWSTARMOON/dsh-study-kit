@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Study kit",
+    "description": "Ingest docx/pptx/pdf/text study material, clean and split it into chapters, rank past-exam topics, draft a mock-exam blueprint, and pack per-chapter notes into Word/PDF deliverables."
+  }
+}
