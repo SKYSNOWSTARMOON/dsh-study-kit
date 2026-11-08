@@ -1,5 +1,14 @@
 # 变更日志
 
+## 0.8.0
+
+- 新增 `lib/anki.js`：把章节里的「## 背诵清单」小节转成 Anki 可导入的 TSV（`#separator:tab` / `#html:true` / `#tags column:3` / `#deck:课程::章`）。
+- `study_course` 新增 `anki:true`，产物落在 `<课程文件夹>\anki\第N章.txt`；输出多一个 `ankiCount`。
+- 卡片只认写好的内容（表格三列、`**术语**：解释`、`正面｜背面｜标签`），不自动从正文抽句子编卡；一张都没有时报告直说「没有找到背诵清单」。
+- 卡片字段会清掉 markdown 记号、行内公式转 `\(...\)`（需在 Anki 里开 MathJax）。
+- 新增 `examples/walkthrough.md`：从装到出成品到 Anki 卡片的完整命令与真实输出。
+- 自测 +3（卡片文件生成、卡片条数、字段清理），共 58 项。
+
 ## 0.7.5
 
 - CI 从「只做语法检查」改为真跑全部 55 项断言（Linux runner × Node 20/22），渲染冒烟失败即红；第一次跑就抓到下面的 bug。

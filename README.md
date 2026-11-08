@@ -164,6 +164,35 @@ study_course({ course: "基础生命科学", chapters: [{ title: "01-第1章-生
 
 登记过的课程，之后所有增补都走同一套合并规则；没登记的也能增补（靠 adopt），只是每次都要重新抠一遍 docx。
 
+## Anki 卡片（v0.8 新增）
+
+想让背的东西进 Anki，就加 `anki:true`：
+
+```js
+study_course({ course: "线性代数", format: "docx", anki: true, chapters: [{ no: 1, title: "行列式" }] })
+```
+
+产物 `<课程文件夹>\anki\01-第1章-行列式.txt`，Anki → 文件 → 导入 → 选「制表符分隔」，卡组自动分成 `线性代数::第1章`。
+
+卡片的来源只有一个：章节里的 **`## 背诵清单`** 小节。认三种写法：
+
+```md
+| 正面 | 背面 | 标签 |
+| --- | --- | --- |
+| 逆序数的定义？ | 排列中前面大于后面的数对个数 | 行列式 |
+
+- **三阶行列式能用对角线法则吗**：能，四阶以上不能
+- 行列式互换两行会怎样？｜变号｜性质
+```
+
+**不自动编卡**：没写背诵清单就一张卡也不出，报告里直说「没有找到「背诵清单」小节」。自动从正文抽句子做出来的卡，正面永远是「这句话是什么意思」，背面是一整段——那种卡背不下去，不如不做。
+
+数学公式会转成 `\(...\)`，Anki 偏好设置里勾上 MathJax 才渲染；没勾就显示原文，不会丢内容。
+
+## 走一遍
+
+从装到出成品到 Anki 卡片的完整命令与真实输出：[examples/walkthrough.md](examples/walkthrough.md)。
+
 ## 工作流
 
 ```
@@ -315,7 +344,7 @@ $node = "C:\Users\SKY\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bi
 ```
 
 自测会：入库（docx 教材 + docx 真题 + pptx 课件 + 手搓 PDF）→ 同源去重 → 索引 → 读章节 → 真题统计 → 命题蓝图 → 课程文件夹增补/只登记/重渲染 → 表格与公式渲染，逐项断言。
-当前 **55 项全部通过**（覆盖表格保序、页眉水印清除、PDF 两页抽取与断行、12 题拆分、100 分合计、热度表无泛词残片、同源副本被跳过、重复入库走复用、同种子可复现、`$|A|$` 不被竖线切断、嵌套下标不残留 LaTeX、粗体里的公式渲染成上下标、表格固定列宽、rerender 重写 Word 但不改正文）。
+当前 **58 项全部通过**（覆盖表格保序、页眉水印清除、PDF 两页抽取与断行、12 题拆分、100 分合计、热度表无泛词残片、同源副本被跳过、重复入库走复用、同种子可复现、`$|A|$` 不被竖线切断、嵌套下标不残留 LaTeX、粗体里的公式渲染成上下标、表格固定列宽、rerender 重写 Word 但不改正文、Anki 卡片生成与字段清理）。
 
 真机（装进 DSH 后）已跑通：4 份样本入库 → 类型与置信度正确（试卷 0.9 / 课件 0.8 / 教材正文 0.5 / PDF 0.65）→ 3 条干净考点 → 蓝图满分 100、12 题、题型配比 5×2 / 2×5 / 3×10 / 2×25、校验无 issue。
 真实资料实测：
@@ -329,7 +358,7 @@ $node = "C:\Users\SKY\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bi
 ## 开发
 
 ```
-lib/            14 个模块，全部零依赖
+lib/            15 个模块，全部零依赖
   index.js      插件入口：注册 9 个工具 + 注入 systemPrompt 输出契约
   tools.js      工具定义与业务流程（47KB，主体）
   clean.js      清洗、类型判定（顺序级联）、shingle 去重
@@ -339,6 +368,7 @@ lib/            14 个模块，全部零依赖
   html.js       markdown → HTML（PDF 打印用）
   tex.js        LaTeX 子集 → 上下标与符号
   export.js     study_pack / study_export / study_course 的落盘与合并
+  anki.js       背诵清单 → Anki TSV 卡片（parseCards / cardsToAnki）
   stats.js      真题拆题与考点热度
   paper.js      命题蓝图与校验
   store.js      资料库索引与读写
@@ -347,7 +377,7 @@ scripts/        OCR、切章、夹具生成、自测
   ocr-pdf.ps1           整本扫描 PDF → 每页文本（Windows.Media.Ocr）
   ocr-image.ps1         零散图片 → 文本
   ocr-chapters-auto.mjs 按目录章名切章（--tocTitles）
-  selftest.mjs          55 项端到端自测
+  selftest.mjs          58 项端到端自测
 ```
 
 约束（提 PR 前请先看）：

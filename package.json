@@ -1,6 +1,6 @@
 {
   "name": "dsh-study-kit",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "description": "【学习】资料整合与备考出题：把教材/笔记/课件/习题/历年真题解析入库，切章建索引、统计考点热度、按真题风格出模拟卷命题蓝图，并把结果导出成 Word/PDF。纯本地、零依赖、不出网。",
   "meta": {
     "title": "（学习）资料整合",
@@ -31,6 +31,7 @@
   "files": [
     "lib",
     "scripts",
+    "examples",
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",

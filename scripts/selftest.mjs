@@ -213,7 +213,34 @@ async function main() {
   check('rerender 会重写 Word', rerenderStat.mtimeMs !== afterStat.mtimeMs, `${afterStat.mtimeMs} vs ${rerenderStat.mtimeMs}`)
   check('rerender 不改正文', rerenderMd === regMd)
 
-  // 表格单元格里的公式：$|A|$ 的竖线不能被当成列分隔符
+  // Anki 卡片：从「背诵清单」小节抽卡，只认写好的卡片
+  const ankiMd = [
+    '# 第1章 细胞',
+    '',
+    '## 六、背诵清单',
+    '',
+    '| 正面 | 背面 | 标签 |',
+    '| --- | --- | --- |',
+    '| 细胞学说的第一句？ | 所有生物由细胞构成 | 细胞 学说 |',
+    '',
+    '- **细胞膜的主要成分**：磷脂双分子层与蛋白质',
+    '- 细胞核的功能？｜储存遗传物质｜细胞核',
+    '',
+  ].join('\n')
+  const ankiRun = await byName.get('study_course').execute({
+    course: '自测课程',
+    outDir: adoptRoot,
+    format: 'docx',
+    anki: true,
+    chapters: [{ no: 2, title: '细胞的化学组成', markdown: ankiMd }],
+  }, exec)
+  const ankiPath = path.join(ankiRun.folder, 'anki', '02-第2章-细胞的化学组成.txt')
+  const ankiText = await fsp.readFile(ankiPath, 'utf8').catch(() => '')
+  check('Anki 卡片文件生成', ankiText.includes('#separator:tab') && ankiText.includes('#deck:自测课程::细胞的化学组成'), ankiText.slice(0, 80))
+  check('Anki 卡片三条都在', ankiText.trim().split('\n').length === 4 + 3, `行数 ${ankiText.trim().split('\n').length}`)
+  check('Anki 卡片字段已清理 markdown', !ankiText.includes('**') && ankiText.includes('磷脂双分子层'))
+
+  // 表格里的公式
   const mathHtml = markdownToHtml('| 项 | 值 |\n| --- | --- |\n| 行列式 | $|A|$ |\n| 下标 | $a_{1p_1}$ |\n', { title: '表格公式' })
   check('表格里的 $|A|$ 不被竖线切断', !mathHtml.includes('$'), mathHtml.slice(0, 120))
   // 只看正文里的 LaTeX 残留（样式表里当然有花括号）
