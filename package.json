@@ -47,11 +47,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<you>/dsh-study-kit.git"
+    "url": "git+https://github.com/SKYSNOWSTARMOON/dsh-study-kit.git"
   },
-  "homepage": "https://github.com/<you>/dsh-study-kit#readme",
+  "homepage": "https://github.com/SKYSNOWSTARMOON/dsh-study-kit#readme",
   "bugs": {
-    "url": "https://github.com/<you>/dsh-study-kit/issues"
+    "url": "https://github.com/SKYSNOWSTARMOON/dsh-study-kit/issues"
   },
   "author": "dsh-study-kit contributors",
   "license": "MIT"

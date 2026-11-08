@@ -35,7 +35,7 @@ docx / pptx / pdf / txt / md 的解析器都是手写的（ZIP + XML、PDF 文�
 
 ```powershell
 # 1. 克隆到任意位置
-git clone https://github.com/<you>/dsh-study-kit.git
+git clone https://github.com/SKYSNOWSTARMOON/dsh-study-kit.git
 
 # 2. 用 DSH 的 plugin_manager 装（传本目录绝对路径）
 plugin_manager install_bundle "D:\path\to\dsh-study-kit"
